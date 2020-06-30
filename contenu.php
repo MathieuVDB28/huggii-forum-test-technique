@@ -24,22 +24,22 @@
     $valid = true;
 
     if (isset($_POST['add_msg'])){
-      $message  = (String) htmlentities(trim($message)); // On récupère le contenu
+      $message  = (String) htmlentities(trim($message)); // On récupère le contenu du message
 
-        if(empty($message)){
+        if(empty($message)){ // On vérifie si le message est vide
           $valid = false;
           $er_msg = "Il faut un commentaire"; 
         }
 
         if($valid){
-          $date_creation = date('Y-m-d H:i:s');
+          $date_creation = date('Y-m-d H:i:s'); // On récupère la date
 
+          // On prépare la requête pour insérer le messages liés au topic 
           $insert = $db->prepare("INSERT INTO topic_commentaire (id_topic, texte, date_creation) VALUES 
                 (?, ?, ?)");
             
-            $insert->execute(array($getid_topic, $message, $date_creation));
-            $insert_res = $insert->fetchAll();
-          header('Location: contenu.php?categorie=' . $getid_forum .'&topic=' . $getid_topic);
+            $insert->execute(array($getid_topic, $message, $date_creation)); // on execute la requête en passant du l'id du message ,le contenu et la date pour eviter les erreurs
+          header('Location: contenu.php?categorie=' . $getid_forum .'&topic=' . $getid_topic); // On redirige ensuite sur la page du topic où le message a été créé
           exit;
         }
     }
@@ -117,6 +117,7 @@
         </table>
         </div>
       </div>
+            <a href="topic.php?id=<?=$getid_forum?>" class="btn btn-primary btn-lg active" role="button" aria-pressed="true" style="float: left; margin-bottom:10px;">Retour à la liste des topics</a>
 </div>
 
  </body>

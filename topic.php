@@ -54,6 +54,7 @@
     </table>
   </div>
 </div>
+        <a href="index.php" class="btn btn-primary btn-lg active" role="button" aria-pressed="true" style="float: left; margin-bottom:10px;">Retour à l'accueil</a>
 </div>
 
   </body>

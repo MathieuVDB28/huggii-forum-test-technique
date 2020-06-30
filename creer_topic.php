@@ -2,6 +2,7 @@
 
   include("bdd/connexionBDD.php");
 
+  // On test d'abord si le contenu du topic est vide
   if(!empty($_POST)){
     extract($_POST);
     $valid = true;
@@ -29,11 +30,12 @@
             $er_categorie = "Il faut sélectionner une catégorie";
 
         }else{
-            $verif_cat = $db->prepare("SELECT id, titre FROM forum WHERE id = ?");
-            $verif_cat->execute(array($categorie));
+            $verif_cat = $db->prepare("SELECT id, titre FROM forum WHERE id = ?"); // On prépare la requête pour récupérer les id des catégories
+            $verif_cat->execute(array($categorie)); // on execute la requête en passant l'id de la catégorie pour eviter les erreurs
 
-            $verif_cat_res = $verif_cat->fetch();
+            $verif_cat_res = $verif_cat->fetch(); // on récupère les id
 
+            // On vérifie si la catégorie existe
             if (!isset($verif_cat_res['id'])){
                 $verif_cat_res = false;
                 $er_categorie= "Cette categorie n'existe pas";
@@ -42,15 +44,15 @@
 
         if($valid){
 
-            $date_creation = date('Y-m-d H:i:s');
+            $date_creation = date('Y-m-d H:i:s'); // On récupère la date 
 
+            // On prépare la requête pour insérer notre topic 
             $insert = $db->prepare("INSERT INTO topic (id_forum, titre, contenu, date_creation) VALUES 
                 (?, ?, ?, ?)");
             
-            $insert->execute(array($categorie, $titre, $contenu, $date_creation));
-            $insert_res = $insert->fetchAll();
-
-            header('Location: topic.php?id=' . $categorie);
+            // on execute la requête en passant l'id, le titre, le contenu et la date de création du topic pour eviter les erreurs
+            $insert->execute(array($categorie, $titre, $contenu, $date_creation)); 
+            header('Location: topic.php?id=' . $categorie); // On redirige ensuite sur la page du topic créé
             exit;
         }
     }
@@ -98,23 +100,25 @@
                 </select>
             </div>   
             <?php
-                if (isset($er_titre)){
+                if (isset($er_titre)){ // On affiche les eventuelles erreurs
                 ?>
                     <div><?= $er_titre ?></div>
                 <?php   
                 }
             ?>
-            <input class="form-control" type="text" placeholder="Votre titre" name="titre" value="<?php if(isset($titre)){ echo $titre; }?>" required>   
+            <input class="form-control" type="text" placeholder="Votre titre" name="titre" value="<?php if(isset($titre)){ echo $titre; }?>" required> <!-- Input pour le titre du topic -->  
             <?php
-                if (isset($er_contenu)){
+                if (isset($er_contenu)){ // On affiche les eventuelles erreurs
                 ?>
                     <div><?= $er_contenu ?></div>
                 <?php   
                 }
             ?>
+            <!-- Textarea pour le contenu du topic --> 
             <textarea class="form-control" id="exampleFormControlTextarea1" placeholder="Décrivez votre topic" name="contenu"<?php if(isset($contenu)){ echo $contenu; }?> rows="3" required></textarea>
             <button class="btn btn-primary" type="submit" name="creer-topic">Envoyer</button>
         </form>
+        <a href="index.php" class="btn btn-primary btn-lg active" role="button" aria-pressed="true" style="float: left; margin-bottom:10px;">Retour à l'accueil</a>
    </div>
 
 </body>
